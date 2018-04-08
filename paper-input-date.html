@@ -1,0 +1,132 @@
+<link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../iron-input/iron-input.html">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../paper-input/paper-input-container.html">
+<link rel="import" href="../paper-input/paper-input-behavior.html">
+<link rel="import" href="../paper-menu-button/paper-menu-button.html">
+<link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="../app-datepicker/app-datepicker.html">
+<link rel="import" href="../iron-icon/iron-icon.html">
+<link rel="import" href="../neon-animation/web-animations.html">
+
+<link rel="import" href="paper-input-date-icons.html">
+
+
+<dom-module id="paper-input-date">
+  <template>
+    <style>
+      :host {
+        display: inline-block;
+        @apply --layout-horizontal;
+        outline: none;
+      }
+
+      :host * {
+        outline: none;
+      }
+
+      input {
+        font: inherit;
+        outline: none;
+        box-shadow: none;
+        border: none;
+        width: auto;
+        text-align: center;
+      }
+
+      paper-menu-button {
+        padding: 0;
+      }
+
+      app-datepicker {
+        --app-datepicker-days-of-week: {
+          line-height: 14px;
+        }
+        --app-datepicker-selected-year: {
+          outline: none;
+        }
+      }
+    </style>
+    <paper-input-container always-float-label>
+      <label slot="label">[[label]]</label>
+      <iron-input slot="input">
+        <iron-input bind-value="{{_day}}" allowed-pattern="[0-9]" aria-label="Dia">
+          <input maxlength="2" size="2">
+        </iron-input>/<iron-input bind-value="{{_month}}" allowed-pattern="[0-9]" aria-label="Dia">
+        <input maxlength="2" size="2">
+        </iron-input>/<iron-input bind-value="{{_year}}" allowed-pattern="[0-9]" aria-label="Dia">
+          <input maxlength="4" size="4">
+        </iron-input>
+      </iron-input>
+      <paper-menu-button id="picker" allow-outside-scroll dynamic-align ignore-select="true" slot="suffix">
+        <iron-icon slot="dropdown-trigger" icon="paper-input-date:arrow-drop-down"></iron-icon>
+        <app-datepicker slot="dropdown-content"
+                        locale="es"
+                        date="{{_pickerValue}}"
+                        auto-update-date
+                        disable-days="[]"
+                        first-day-of-week="1">
+          <paper-button on-tap="_closePicker" slot="dismiss-button" dialog-dismiss>Salir</paper-button>
+          <paper-button on-tap="_closePicker" slot="confirm-button" dialog-confirm>Aceptar</paper-button>
+        </app-datepicker>
+      </paper-menu-button>
+    </paper-input-container>
+
+  </template>
+
+  <script>
+    /**
+     * `paper-input-date`
+     * 
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/index.html
+     */
+    class PaperInputDate extends Polymer.mixinBehaviors([ Polymer.PaperInputBehavior ], Polymer.Element) {
+      static get is() { return 'paper-input-date'; }
+      static get properties() {
+        return {
+          _day: {
+            type: Number
+          },
+          _month: {
+            type: Number
+          },
+          _year: {
+            type: Number
+          },
+          _pickerValue: {
+            type: String
+          }
+        };
+      }
+      static get observers() {
+        return [
+          // Observer method name, followed by a list of dependencies, in parenthesis
+          // '_valueChanged(_pickerValue)'
+        ]
+      }
+
+      _valueChanged(value) {
+        var date = new Date(value);
+        this.set('_day', this._pad(date.getDate(), 2));
+        this.set('_month', this._pad(date.getMonth() + 1, 2));
+        this.set('_year', date.getFullYear());
+      }
+
+      _pad(number, length) {
+          return ("000"+number).slice(-length);
+      }
+
+      _closePicker(event) {
+        if(event.target.hasAttribute("dialog-confirm")) {
+            this._valueChanged(this._pickerValue);
+        }
+        this.$.picker.close();
+      }
+    }
+
+    window.customElements.define(PaperInputDate.is, PaperInputDate);
+  </script>
+</dom-module>
