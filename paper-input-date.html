@@ -17,7 +17,6 @@
     <style>
       :host {
         display: inline-block;
-        @apply --layout-horizontal;
         outline: none;
       }
 
@@ -25,17 +24,36 @@
         outline: none;
       }
 
+      .container {
+        @apply --layout-horizontal;
+      }
+
       input {
-        font: inherit;
-        outline: none;
-        box-shadow: none;
-        border: none;
-        width: auto;
-        text-align: center;
+        /* Firefox sets a min-width on the input, which can cause layout issues */
+        min-width: 0;
+      }
+
+      iron-input > input {
+        @apply --paper-input-container-shared-input-style;
+        font-family: inherit;
+        font-weight: inherit;
+        font-size: inherit;
+        letter-spacing: inherit;
+        word-spacing: inherit;
+        line-height: inherit;
+        text-shadow: inherit;
+        color: inherit;
+        cursor: inherit;
       }
 
       paper-menu-button {
         padding: 0;
+        width: 24px;
+        height: 24px;
+      }
+
+      :host([read-only]) paper-menu-button {
+        visibility: hidden;
       }
 
       app-datepicker {
@@ -50,7 +68,7 @@
     <paper-input-container always-float-label>
       <label slot="label">[[label]]</label>
       <iron-input slot="input">
-        <iron-input bind-value="{{_day}}" allowed-pattern="[0-9]" aria-label="Dia" on-change="_inputToValue">
+        <iron-input id="day_input" bind-value="{{_day}}" allowed-pattern="[0-9]" aria-label="Dia" on-change="_inputToValue">
           <input maxlength="2" size="2">
         </iron-input>/<iron-input bind-value="{{_month}}" allowed-pattern="[0-9]" aria-label="Dia" on-change="_inputToValue">
         <input maxlength="2" size="2">
@@ -58,6 +76,7 @@
           <input maxlength="4" size="4">
         </iron-input>
       </iron-input>
+      <paper-input-error slot="add-on">Fecha inválida</paper-input-error>
       <paper-menu-button id="picker" allow-outside-scroll dynamic-align ignore-select="true" slot="suffix">
         <iron-icon slot="dropdown-trigger" icon="paper-input-date:arrow-drop-down"></iron-icon>
         <app-datepicker id="datepicker"
