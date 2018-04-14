@@ -77,7 +77,7 @@
   <script>
     /**
      * `paper-input-date`
-     * 
+     *
      *
      * @customElement
      * @polymer
@@ -98,6 +98,10 @@
           },
           _pickerValue: {
             type: String
+          },
+          autoValidate: {
+            type: Boolean,
+            value: true
           }
         };
       }
@@ -106,6 +110,19 @@
           // Observer method name, followed by a list of dependencies, in parenthesis
           '_valueChanged(value)'
         ]
+      }
+
+      get _focusableElement() {
+        return this.$.day_input.inputElement;
+      }
+
+      _focusBlurHandler(event) {
+        Polymer.IronControlState._focusBlurHandler.call(this, event);
+        // Forward the focus to the nested input.
+        if (this.focused && !this._shiftTabPressed && this._focusableElement) {
+          this._focusableElement.focus();
+          this._focusableElement.select();
+        }
       }
 
       _valueChanged(value) {
@@ -117,9 +134,11 @@
         var isoDate = this._getIsoDate();
         var date = new Date(isoDate);
         if(!isNaN(date.getTime())) {
-          var d = date.toISOString();
-          this.set('value', d);
+          this.set('value', isoDate);
           this.$.datepicker.inputDate = isoDate;
+          this.root.querySelector('paper-input-container').invalid=false;
+        } else {
+          this.root.querySelector('paper-input-container').invalid=true;
         }
       }
 
