@@ -66,7 +66,7 @@
       }
 
       :host([read-only]) paper-menu-button {
-        visibility: hidden;
+        display: none;
       }
 
       app-datepicker {
@@ -157,6 +157,9 @@
         return this.$.day_input.inputElement;
       }
 
+      validate() {
+      }
+
       _focusBlurHandler(event) {
         Polymer.IronControlState._focusBlurHandler.call(this, event);
         // Forward the focus to the nested input.
@@ -179,8 +182,13 @@
       }
 
       _inputToValue() {
+        if(!this._complete()) return;
+        
         var isoDate = this._getIsoDate();
+        console.log('isoDate:' + isoDate);
         var date = new Date(isoDate);
+        console.log(date);
+
         if (!isNaN(date.getTime())) {
           this.set('value', isoDate);
           this.$.datepicker.inputDate = isoDate;
@@ -190,8 +198,13 @@
         }
       }
 
+      _complete() {
+        if(!this._year || !this._month || !this._day) return false;
+        return true;
+      }
+
       _getIsoDate() {
-        return this._year + "-" + this._month + "-" + this._day;
+        return (this._year || '  ') + "-" + (this._month || '  ') + "-" + (this._day || '  ');
       }
 
       _setInputValue(value) {
