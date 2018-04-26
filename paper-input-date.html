@@ -16,9 +16,10 @@
   <template>
     <style>
       :host {
-        display: inline-block;
+        display: block;
         outline: none;
-
+        white-space: nowrap;
+        
         --paper-input-container-input: {
           white-space: nowrap;
           font-size: 0px;
@@ -183,7 +184,7 @@
 
       _inputToValue() {
         if(!this._complete()) return;
-        
+
         var isoDate = this._getIsoDate();
         console.log('isoDate:' + isoDate);
         var date = new Date(isoDate);
