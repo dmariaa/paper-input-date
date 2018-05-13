@@ -223,6 +223,9 @@
       }
 
       _closePicker(event) {
+        event.stopPropagation();
+        event.cancelBubble = true;
+
         if (event.target.hasAttribute("dialog-confirm")) {
           this._setInputValue(this.$.datepicker.date);
           this.set('value', this._getIsoDate());
