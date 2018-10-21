@@ -80,7 +80,9 @@
         };
       }
     </style>
-    <paper-input-container always-float-label>
+    <paper-input-container
+        always-float-label
+        invalid="[[invalid]]">
       <label slot="label">[[label]]</label>
       <iron-input slot="input">
         <iron-input id="day_input" bind-value="{{_day}}" allowed-pattern="[0-9]" aria-label="Dia"
@@ -96,7 +98,9 @@
           <input maxlength="4" size="4">
         </iron-input>
       </iron-input>
-      <paper-input-error slot="add-on">Fecha inválida</paper-input-error>
+      <template is="dom-if" if="[[errorMessage]]">
+        <paper-input-error aria-live="assertive" slot="add-on">[[errorMessage]]</paper-input-error>
+      </template>
       <paper-menu-button id="picker" allow-outside-scroll dynamic-align ignore-select="true" slot="suffix">
         <iron-icon slot="dropdown-trigger" icon="paper-input-date:arrow-drop-down"></iron-icon>
         <app-datepicker id="datepicker"
@@ -129,6 +133,9 @@
 
       static get properties() {
         return {
+          value: {
+            type: String
+          },
           _day: {
             type: Number
           },
